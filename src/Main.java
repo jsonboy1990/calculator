@@ -1,6 +1,7 @@
 import com.sun.xml.internal.ws.util.StringUtils;
 import constant.Constants;
 import constant.OperatorEnum;
+import constant.PromptMessageEnum;
 import entity.CalEntity;
 import utils.CalculateUtil;
 
@@ -10,36 +11,37 @@ public class Main {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         while (true){
-            System.out.println("计算器开始运行，请输入计算表达式或者R(重算),U(撤销)：");
+            System.out.println(PromptMessageEnum.START_MSG.getMsg());
             String exprssionStr= input.nextLine();
             if(Constants.REDO.equals(exprssionStr)){
                 String redoResult = CalculateUtil.redo();
                 if(null==redoResult){
-                    System.err.println("没有撤销的计算数据，无法重算");
+                    System.out.println(PromptMessageEnum.RODO_FAIL_MSG.getMsg());
                 }
                 else {
-                    System.out.println("重算结果为："+redoResult);
+                    System.out.printf(PromptMessageEnum.RODO_SUCCESS_MSG.getMsg(),redoResult);
                 }
             }
             else if(Constants.UODO.equals(exprssionStr)){
                 String undoResult = CalculateUtil.undo();
                 if(null==undoResult){
-                    System.err.println("没有历史计算数据，无法撤销");
+                    System.out.println(PromptMessageEnum.UNDO_FAIL_MSG.getMsg());
                 }
                 else {
-                    System.out.println("撤销此次计算结果："+undoResult);
+                    System.out.printf(PromptMessageEnum.UNDO_SUCCESS_MSG.getMsg(),undoResult);
                 }
             }
             else {
                 CalEntity calEntity = getCalEntity(exprssionStr);
                 if(calEntity==null){
-                    return;
+                    continue;
                 }
                 long res = CalculateUtil.cal(calEntity);
                 String resutl=String.format("%s=%s",exprssionStr,res);
                 CalculateUtil.saveCalResult(resutl);
-                System.out.println("此次计算结果："+resutl);
+                System.out.printf(PromptMessageEnum.CAL_SUCCESS.getMsg(),resutl);
             }
+           System.out.printf("\n");
         }
     }
 
@@ -55,7 +57,6 @@ public class Main {
            }
            else {
                String s = String.valueOf(c);
-               System.out.println("operate:"+s);
                OperatorEnum operatorEnum = OperatorEnum.valueOfName(s);
                if(operatorEnum!=null){
                   String firstNumStr=exprssionStr.substring(0,i);
@@ -66,13 +67,13 @@ public class Main {
                       return new CalEntity(firstNum,secondNum,s);
                   }
                   catch (Exception ex){
-                      System.err.println(exprssionStr+"计算表达式非法，请重新输入");
+                      System.out.printf(PromptMessageEnum.ILLEGAL_INPUT.getMsg(),exprssionStr);
                       return null;
                   }
               }
            }
        }
-       System.err.println(exprssionStr+"没有包含+-*/运算符中的一个，请重新输入");
+        System.out.printf(PromptMessageEnum.ILLEGAL_INPUT.getMsg(),exprssionStr);
         return null;
     }
 }

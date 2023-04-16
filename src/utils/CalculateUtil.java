@@ -56,6 +56,8 @@ public class CalculateUtil {
             case DIV:
                 res= div(entity.getFirstNum(),entity.getSecondNum());
                 break;
+            default:
+                break;
         }
         return res;
     }

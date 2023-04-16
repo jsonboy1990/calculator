@@ -10,17 +10,17 @@ public enum OperatorEnum {
 
     private String operator;
 
-    private static final Map<String, OperatorEnum> MAP = new HashMap<>();
+    private static final Map<String, OperatorEnum> map;
 
     static {
+        map = new HashMap<>();
         for (OperatorEnum season : values()) {
-            MAP.put(season.operator, season);
+            map.put(season.operator, season);
         }
     }
 
     public static OperatorEnum valueOfName(String name) {
-
-        return MAP.get(name);
+        return map.get(name);
     }
 
     private OperatorEnum(int code, String name) {
